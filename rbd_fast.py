@@ -6,6 +6,7 @@ Created on Wed Jun  7 14:53:15 2017
 """
 
 import numpy as np
+import logger as log
 warning_on = False
 
 
@@ -79,9 +80,6 @@ def rbdfast(y, x=np.matrix([]), index=np.matrix([]), m=10, bootstrap=False):
     TO DO : bootstrap
     Warning on warning off message (or only once)
 
-
-
-
     RBD python Code for Random Balance Designs
     For the estimation of first order indices
 
@@ -114,7 +112,7 @@ def rbdfast(y, x=np.matrix([]), index=np.matrix([]), m=10, bootstrap=False):
     if x.size == 0:  # .size == 0: #?????
         if index.size == 0:  # nargin < 3 or isempty(Index):
             # TO DO raise proper error
-            print('Error : An index of permutation must be defined.')
+            log.logger.error('An index of permutation must be defined.')
             return
         n, k = index.shape[0], index[0].size
         useindex = True
@@ -123,7 +121,7 @@ def rbdfast(y, x=np.matrix([]), index=np.matrix([]), m=10, bootstrap=False):
         useindex = False
 
     if y.shape[0] != n:
-        print('Error : Arguments dimensions are not consistent')
+        log.logger.error('Arguments dimensions are not consistent')
         return
 
     if n < 2 * (m + 100):
@@ -156,36 +154,35 @@ def rbdfast(y, x=np.matrix([]), index=np.matrix([]), m=10, bootstrap=False):
 
         """
         if bootstrap == True:
-            print('Bootstrap analysis :\n')
+            log.logger.info('Bootstrap analysis :\n')
             bootstrap()
         """
 
         if warning_on:
-            print('\n~~~!!!~~~\n',
-                  'There has been at least on low Sample Size\n',
-                  'Insufficient simulations for proper analysis\n')
+            log.logger.error('There has been at least on low Sample Size Insufficient simulations for proper analysis')
     return si, si_c
 
-
-
-#==============================================================================
-#           Bootstrap indicator
-#==============================================================================
-"""
-????????
-
-if isfield(analyse,'bootstrap') &&  analyse.bootstrap
-	fprintf('-> Bootstrap analysis.\n')
-	for rep = 1:analyse.bootstrap_param.rep
-		# Selection aléatoire de données avec retirage
-		Ind = randi(nbs_sorties,analyse.bootstrap_param.ech,1);
-
-		if params.type_ech==3
-			SIbs_rbdfast(:,:,rep)=rbd_fast(1,true,analyse.RBD.harmonics,params.index_rbd_fast(Ind,:),resultat.sorties(Ind,:));
-		else
-			SIbs_rbdfast(:,:,rep)=rbd_fast(1,true,analyse.RBD.harmonics,[],resultat.sorties(Ind,:),params.plan(Ind,1:params.variables.vars_nb));
-
-	analyse.SIbs_rbdfast_mean = mean(SIbs_rbdfast,3);
-	analyse.SIbs_rbdfast_var = var(SIbs_rbdfast,0,3);
-end
-"""
+if __name__ == "__main__":
+    
+    
+    #==============================================================================
+    #           Bootstrap indicator
+    #==============================================================================
+    """
+    ????????
+    
+    if isfield(analyse,'bootstrap') &&  analyse.bootstrap:
+    	log.logger.info('-> Bootstrap analysis.\n')
+    	for rep = 1:analyse.bootstrap_param.rep:
+    		# Selection aléatoire de données avec retirage
+    		Ind = randi(nbs_sorties,analyse.bootstrap_param.ech,1);
+    
+    		if params.type_ech==3:
+    			SIbs_rbdfast(:,:,rep)=rbd_fast(1,true,analyse.RBD.harmonics,params.index_rbd_fast(Ind,:),resultat.sorties(Ind,:));
+    		else
+    			SIbs_rbdfast(:,:,rep)=rbd_fast(1,true,analyse.RBD.harmonics,[],resultat.sorties(Ind,:),params.plan(Ind,1:params.variables.vars_nb));
+    
+    	analyse.SIbs_rbdfast_mean = mean(SIbs_rbdfast,3);
+    	analyse.SIbs_rbdfast_var = var(SIbs_rbdfast,0,3);
+    end
+    """
